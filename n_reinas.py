@@ -38,11 +38,11 @@ for tablero in range(len(poblacionInicial)):
                 "La resta de resultados es: ", abs(poblacionInicial[tablero][i] - poblacionInicial[tablero][j])) """
 
 suma_total = 0
+suma_total = np.sum(choquesDiagonales)
 
 for i in range(len(choquesDiagonales)):
     choquesDiagonales[i] = maximoAtaques - choquesDiagonales[i]
-    suma_total = np.sum(choquesDiagonales)
-    print(choquesDiagonales)
-    print("xd", suma_total)
     choquesDiagonales[i] /= suma_total
     choquesDiagonales[i] = round(choquesDiagonales[i],2)
+
+print(choquesDiagonales)
