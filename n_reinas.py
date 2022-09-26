@@ -32,15 +32,21 @@ for tablero in range(len(poblacionInicial)):
         for j in range(len(poblacionInicial[tablero])):
             if abs(i-j) == abs(poblacionInicial[tablero][i] - poblacionInicial[tablero][j]) and i != j:
                 choquesDiagonales[tablero] += 1
-                choquesDiagonales[tablero] /= 2
                 """ print("Tablero N°: ",tablero ,
                 " Donde fila", i, " Valor ", poblacionInicial[tablero][i],
                 " Donde fila", j, " Valor ", poblacionInicial[tablero][j],
                 "La resta de iteradores es: ", abs(i-j),
                 "La resta de resultados es: ", abs(poblacionInicial[tablero][i] - poblacionInicial[tablero][j])) """
+    choquesDiagonales[tablero] /= 2
 
+print("-----")
+print(choquesDiagonales)
 suma_total = 0
 suma_total = np.sum(choquesDiagonales)
+print(suma_total)
+
+for i in range(len(choquesDiagonales)):
+    
 
 for i in range(len(choquesDiagonales)):
     choquesDiagonales[i] = maximoFitness - choquesDiagonales[i]
@@ -49,4 +55,4 @@ for i in range(len(choquesDiagonales)):
     
 
 
-print(choquesDiagonales)
+#print(choquesDiagonales)
