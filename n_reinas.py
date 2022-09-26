@@ -2,7 +2,7 @@
 import sys
 import numpy as np
 import math
-
+vdssfdsfdfd
 if len(sys.argv) == 4 :
     semilla = int(sys.argv[1])
     tamanoTableros = int(sys.argv[2])
