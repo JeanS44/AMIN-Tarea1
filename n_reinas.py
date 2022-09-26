@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import sys
 import numpy as np
 import math
@@ -22,7 +23,7 @@ for i in range(cantidadTableros):
 
 print(poblacionInicial)
 
-maximoAtaques = tamanoTableros*(tamanoTableros-1)/2
+maximoFitness = tamanoTableros*(tamanoTableros-1)/2
 choquesDiagonales = np.zeros((cantidadTableros), float)
 
 for tablero in range(len(poblacionInicial)):
@@ -30,7 +31,8 @@ for tablero in range(len(poblacionInicial)):
         arrayAux = poblacionInicial[tablero]
         for j in range(len(poblacionInicial[tablero])):
             if abs(i-j) == abs(poblacionInicial[tablero][i] - poblacionInicial[tablero][j]) and i != j:
-                choquesDiagonales[tablero] +=1
+                choquesDiagonales[tablero] += 1
+                choquesDiagonales[tablero] /= 2
                 """ print("Tablero N°: ",tablero ,
                 " Donde fila", i, " Valor ", poblacionInicial[tablero][i],
                 " Donde fila", j, " Valor ", poblacionInicial[tablero][j],
@@ -41,8 +43,10 @@ suma_total = 0
 suma_total = np.sum(choquesDiagonales)
 
 for i in range(len(choquesDiagonales)):
-    choquesDiagonales[i] = maximoAtaques - choquesDiagonales[i]
+    choquesDiagonales[i] = maximoFitness - choquesDiagonales[i]
     choquesDiagonales[i] /= suma_total
     choquesDiagonales[i] = round(choquesDiagonales[i],2)
+    
+
 
 print(choquesDiagonales)
