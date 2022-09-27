@@ -3,51 +3,93 @@ import sys
 import numpy as np
 import math
 
-if len(sys.argv) == 4 :
+def inicializarPoblacion(tamano, cantidad):
+    poblacionInicial = np.zeros((cantidad, tamano), int)
+    for i in range(cantidadTableros):
+        poblacionInicial[i] = np.arange(0, tamanoTableros)
+        np.random.shuffle(poblacionInicial[i])
+    return poblacionInicial
+
+def determinarFitness(poblacionInicial, cantidad, tamano):
+    arrayFitness = np.zeros(cantidad, float)
+    for tablero in range(len(poblacionInicial)):
+        for i in range(len(poblacionInicial[tablero])):
+            for j in range(len(poblacionInicial[tablero])):
+                if abs(i-j) == abs(poblacionInicial[tablero][i] - poblacionInicial[tablero][j]) and i != j:
+                    arrayFitness[tablero] += 1
+        arrayFitness[tablero] /= 2
+    np.append(arrayFitness, (tamano*(tamano-1)/2)-arrayFitness[tablero])
+    return arrayFitness
+
+def determinarSumaTotal(fitness):
+    return np.sum(fitness)
+
+def determinarProporcion(fitness):
+    sumatotal = np.sum(fitness)
+    for i in range(len(fitness)):
+        fitness[i] = (fitness[i])/sumatotal
+        fitness[i] = round(fitness[i],6)
+    return fitness
+
+def determinarProporcion(fitness):
+    sumatotal = np.sum(fitness)
+    for i in range(len(fitness)):
+        fitness[i] = (fitness[i])/sumatotal
+        fitness[i] = round(fitness[i],6)
+    return fitness
+
+def determinarRuleta(fitness):
+    ruleta = np.array([])
+    ruleta = np.append(ruleta, fitness[0]/np.sum(fitness))
+    for i in range(1, len(fitness)):
+        proporcion = fitness[i]/np.sum(fitness)
+        ruleta = np.append(ruleta, ruleta[i-1]+proporcion)
+    return ruleta
+
+def invertirFitness(fitness, tamano):
+    fitness_invertido = np.array([])
+    for i in range(len(fitness)):
+        fitness_invertido = np.append(fitness_invertido, (tamano*(tamano-1)/2)-fitness[i])
+    return fitness_invertido
+
+def proporcionInvertida(fitnessInvertido):
+    proporcion_invertida = np.array([])
+    suma_fitness_invertido = np.sum(fitnessInvertido)
+    for i in range(len(fitnessInvertido)):
+        proporcion_invertida = np.append(proporcion_invertida, fitnessInvertido[i]/suma_fitness_invertido)
+    return proporcion_invertida
+
+def ruletaInvertida(fitnessInvertido):
+    ruleta_ivertida = np.array([])
+    ruleta_ivertida = np.append(ruleta_ivertida, fitnessInvertido[0]/np.sum(fitnessInvertido))
+    for i in range(1, len(fitnessInvertido)):
+        proporcion = fitnessInvertido[i]/np.sum(fitnessInvertido)
+        ruleta_ivertida = np.append(ruleta_ivertida, ruleta_ivertida[i-1]+proporcion)
+    return ruleta_ivertida
+
+if len(sys.argv) == 4:
     semilla = int(sys.argv[1])
+    np.random.seed(semilla)
     tamanoTableros = int(sys.argv[2])
     cantidadTableros = int(sys.argv[3])
-    print("")
-    print("Semilla: ", semilla, " Tamaño del tablero: ", tamanoTableros, " Cantidad de tableros: ", cantidadTableros)
-    print("")
+    poblacion = inicializarPoblacion(tamanoTableros, cantidadTableros)
+    print(poblacion)
+    fitness = determinarFitness(poblacion, cantidadTableros, tamanoTableros)
+    print(fitness)
+    suma_total = determinarSumaTotal(fitness)
+    print(suma_total)
+    proporcion = determinarProporcion(fitness)
+    print(proporcion)
+    ruleta = determinarRuleta(fitness)
+    print(ruleta)
+    fitness_aux = determinarFitness(poblacion, cantidadTableros, tamanoTableros)
+    fitness_invertido = invertirFitness(fitness_aux, tamanoTableros)
+    print(fitness_invertido)
+    proporcion_invertida = proporcionInvertida(fitness_invertido)
+    print(proporcion_invertida)
+    ruleta_invertida = ruletaInvertida(fitness_invertido)
+    print(ruleta_invertida)
 else:
     print("Porfavor reingrese los parámetros de manera correcta.")
     print("Parametros a ingresar: 'Nombre del archivo' 'Semilla' 'Tamaño de tablero' 'Cantidad de tableros'")
     sys.exit(0)
-
-np.random.seed(semilla)
-
-poblacionInicial = np.zeros((cantidadTableros, tamanoTableros), int)
-
-for i in range(cantidadTableros):
-    poblacionInicial[i] = np.arange(0, tamanoTableros)
-    np.random.shuffle(poblacionInicial[i])
-
-print("La población inicial es: ")
-print(poblacionInicial)
-print("")
-
-maximoFitness = tamanoTableros*(tamanoTableros-1)/2
-choquesDiagonales = np.zeros((cantidadTableros), float)
-
-for tablero in range(len(poblacionInicial)):
-    for i in range(len(poblacionInicial[tablero])):
-        arrayAux = poblacionInicial[tablero]
-        for j in range(len(poblacionInicial[tablero])):
-            if abs(i-j) == abs(poblacionInicial[tablero][i] - poblacionInicial[tablero][j]) and i != j:
-                choquesDiagonales[tablero] += 1
-                """ print("Tablero N°: ",tablero ,
-                " Donde fila", i, " Valor ", poblacionInicial[tablero][i],
-                " Donde fila", j, " Valor ", poblacionInicial[tablero][j],
-                "La resta de iteradores es: ", abs(i-j),
-                "La resta de resultados es: ", abs(poblacionInicial[tablero][i] - poblacionInicial[tablero][j])) """
-    choquesDiagonales[tablero] /= 2
-
-print("El arreglo de choques: ")
-print(choquesDiagonales)
-print("")
-suma_total = 0
-suma_total = np.sum(choquesDiagonales)
-
-print("La suma total del arreglo de choques es: ")
-print(suma_total)
