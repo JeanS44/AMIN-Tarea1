@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 import sys
 import numpy as np
-import math
 
 def inicializarPoblacion(tamano, cantidad):
     poblacionInicial = np.zeros((cantidad, tamano), int)
@@ -40,7 +39,7 @@ def determinarProporcion(fitness):
 
 def determinarRuleta(fitness):
     ruleta = np.array([])
-    ruleta = np.append(ruleta, fitness[0]/np.sum(fitness))
+    ruleta = np.append(ruleta, fitness[0:1]/np.sum(fitness))
     for i in range(1, len(fitness)):
         proporcion = fitness[i]/np.sum(fitness)
         ruleta = np.append(ruleta, ruleta[i-1]+proporcion)
@@ -67,6 +66,14 @@ def ruletaInvertida(fitnessInvertido):
         ruleta_ivertida = np.append(ruleta_ivertida, ruleta_ivertida[i-1]+proporcion)
     return ruleta_ivertida
 
+def seleccionIndividuos(ruleta_invertida):
+    pos = 0
+    azar = np.random.uniform(0, 1)
+    for i in range(len(ruleta_invertida)):
+        if azar <= ruleta_invertida[i]:
+            pos=i
+            return pos, azar, ruleta_invertida[pos]
+
 if len(sys.argv) == 4:
     semilla = int(sys.argv[1])
     np.random.seed(semilla)
@@ -89,6 +96,9 @@ if len(sys.argv) == 4:
     print(proporcion_invertida)
     ruleta_invertida = ruletaInvertida(fitness_invertido)
     print(ruleta_invertida)
+    print("")
+    seleccion = seleccionIndividuos(ruleta_invertida)
+    print(seleccion)
 else:
     print("Porfavor reingrese los parámetros de manera correcta.")
     print("Parametros a ingresar: 'Nombre del archivo' 'Semilla' 'Tamaño de tablero' 'Cantidad de tableros'")
