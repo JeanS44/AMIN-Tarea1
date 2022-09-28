@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import sys
 import numpy as np
+import random
 
 def inicializarPoblacion(tamano, cantidad):
     poblacionInicial = np.zeros((cantidad, tamano), int)
@@ -74,6 +75,14 @@ def seleccionIndividuos(ruleta_invertida):
             pos=i
             return pos, azar, ruleta_invertida[pos]
 
+def cruza(padre_1, padre_2):
+    punto = random.randint(1, len(padre_1)-2)
+    print("punto: "+str(punto))
+    hijo_1, hijo_2 = padre_1.copy(), padre_2.copy()
+    hijo_1 = np.append(padre_1[:punto], padre_2[punto:])
+    hijo_2 = np.append(padre_2[:punto], padre_1[punto:])
+    return [hijo_1, hijo_2]
+
 if len(sys.argv) == 4:
     semilla = int(sys.argv[1])
     np.random.seed(semilla)
@@ -96,9 +105,13 @@ if len(sys.argv) == 4:
     print(proporcion_invertida)
     ruleta_invertida = ruletaInvertida(fitness_invertido)
     print(ruleta_invertida)
-    print("")
-    seleccion = seleccionIndividuos(ruleta_invertida)
-    print(seleccion)
+    print("----")
+    #seleccion = seleccionIndividuos(ruleta_invertida)
+    #print(seleccion)
+    #seleccion = seleccionIndividuos(ruleta_invertida)
+    #print(seleccion)
+    print(cruza(poblacion[0],poblacion[1]))
+
 else:
     print("Porfavor reingrese los parámetros de manera correcta.")
     print("Parametros a ingresar: 'Nombre del archivo' 'Semilla' 'Tamaño de tablero' 'Cantidad de tableros'")
