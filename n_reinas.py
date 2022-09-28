@@ -69,7 +69,7 @@ def ruletaInvertida(fitnessInvertido):
 
 def seleccionIndividuos(ruleta_invertida):
     pos = 0
-    azar = np.random.uniform(0, 1)
+    azar = random.uniform(0, 1)
     for i in range(len(ruleta_invertida)):
         if azar <= ruleta_invertida[i]:
             pos=i
@@ -106,8 +106,8 @@ if len(sys.argv) == 4:
     ruleta_invertida = ruletaInvertida(fitness_invertido)
     print(ruleta_invertida)
     print("----")
-    #seleccion = seleccionIndividuos(ruleta_invertida)
-    #print(seleccion)
+    seleccion = seleccionIndividuos(ruleta_invertida)
+    print(seleccion)
     #seleccion = seleccionIndividuos(ruleta_invertida)
     #print(seleccion)
     print(cruza(poblacion[0],poblacion[1]))
