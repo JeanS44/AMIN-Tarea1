@@ -31,13 +31,6 @@ def determinarProporcion(fitness):
         fitness[i] = round(fitness[i],6)
     return fitness
 
-def determinarProporcion(fitness):
-    sumatotal = np.sum(fitness)
-    for i in range(len(fitness)):
-        fitness[i] = (fitness[i])/sumatotal
-        fitness[i] = round(fitness[i],6)
-    return fitness
-
 def determinarRuleta(fitness):
     ruleta = np.array([])
     ruleta = np.append(ruleta, fitness[0:1]/np.sum(fitness))
@@ -73,7 +66,8 @@ def seleccionIndividuos(ruleta_invertida):
     for i in range(len(ruleta_invertida)):
         if azar <= ruleta_invertida[i]:
             pos=i
-            return pos, azar, ruleta_invertida[pos]
+            #return pos, azar, ruleta_invertida[pos]
+            return pos
 
 def cruza(padre_1, padre_2):
     punto = random.randint(1, len(padre_1)-2)
@@ -83,15 +77,21 @@ def cruza(padre_1, padre_2):
     hijo_2 = np.append(padre_2[:punto], padre_1[punto:])
     return [hijo_1, hijo_2]
 
+def mutacion(individuo):
+    return np.random.permutation(individuo)
+
 if len(sys.argv) == 4:
     semilla = int(sys.argv[1])
     np.random.seed(semilla)
     tamanoTableros = int(sys.argv[2])
     cantidadTableros = int(sys.argv[3])
+    iteraciones = 1
     poblacion = inicializarPoblacion(tamanoTableros, cantidadTableros)
     print(poblacion)
+
+    #for i in range iteraciones:
     fitness = determinarFitness(poblacion, cantidadTableros, tamanoTableros)
-    print(fitness)
+    print("fitness: "+str(fitness))
     suma_total = determinarSumaTotal(fitness)
     print(suma_total)
     proporcion = determinarProporcion(fitness)
@@ -108,9 +108,9 @@ if len(sys.argv) == 4:
     print("----")
     seleccion = seleccionIndividuos(ruleta_invertida)
     print(seleccion)
-    #seleccion = seleccionIndividuos(ruleta_invertida)
-    #print(seleccion)
-    print(cruza(poblacion[0],poblacion[1]))
+    print(cruza(poblacion[seleccionIndividuos(ruleta_invertida)],poblacion[seleccionIndividuos(ruleta_invertida)]))
+    if random.uniform(0,1) <= 0.05:
+        print(mutacion(poblacion[seleccionIndividuos(ruleta_invertida)]))
 
 else:
     print("Porfavor reingrese los parámetros de manera correcta.")
