@@ -21,6 +21,9 @@ def determinarFitness(poblacionInicial, cantidad, tamano):
     np.append(arrayFitness, (tamano*(tamano-1)/2)-arrayFitness[tablero])
     return arrayFitness
 
+def solucionFitness(tamano):
+    return tamano*(tamano-1)/2
+
 def determinarSumaTotal(fitness):
     return np.sum(fitness)
 
@@ -128,10 +131,18 @@ if len(sys.argv) == 7:
 
                 if random.uniform(0,1) <= prob_mutacion and len(poblacion_hijos)!=0:
                     poblacion_hijos[indice-1] = mutacion(poblacion_hijos[indice-1])
-        
+
         poblacion = np.array(poblacion_hijos)
         print(poblacion)
-                
+
+    fitness_aux = determinarFitness(poblacion, cantidadTableros, tamanoTableros)
+    fitness_invertido = invertirFitness(fitness_aux, tamanoTableros)
+    print(fitness_invertido)
+    
+    for n in range(len(fitness_invertido)):
+        if fitness_invertido[n] == solucionFitness(tamanoTableros):
+            print(str(n)," - ",str(poblacion[n]))
+
 else:
     print("Porfavor reingrese los parámetros de manera correcta.")
     print("Parametros a ingresar: 'Nombre del archivo' 'Semilla' 'Tamaño de tablero' 'Cantidad de tableros' 'Iteraciones' 'Probabilidad Cruza' 'Probabilidad Mutacion' ")
