@@ -115,20 +115,18 @@ if len(sys.argv) == 7:
                 if len(poblacion)-indice != 1:
                     if random.uniform(0,1) <= prob_cruza:
                         resultado_cruza = cruza(poblacion[padre_1],poblacion[padre_2])
-                        print("resultado cruza doble: ",str(resultado_cruza))
+                        #print("resultado cruza doble: ",str(resultado_cruza))
                         poblacion_hijos.append(resultado_cruza[0])
                         poblacion_hijos.append(resultado_cruza[1])
                         indice+=2
                 else:
                     if random.uniform(0,1) <= prob_cruza:
                         resultado_cruza = cruza(poblacion[padre_1],poblacion[padre_2])
-                        print("resultado cruza single: ",str(resultado_cruza))
+                        #print("resultado cruza single: ",str(resultado_cruza))
                         poblacion_hijos.append(resultado_cruza[random.randint(0,1)])
                         indice+=1
 
                 if random.uniform(0,1) <= prob_mutacion and len(poblacion_hijos)!=0:
-                    print(len(poblacion_hijos))
-                    print(indice)
                     poblacion_hijos[indice-1] = mutacion(poblacion_hijos[indice-1])
         
         poblacion = np.array(poblacion_hijos)
