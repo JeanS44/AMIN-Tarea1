@@ -79,6 +79,23 @@ def cruza(padre_1, padre_2):
     hijo_2 = np.append(padre_2[:punto], padre_1[punto:])
     return [hijo_1, hijo_2]
 
+def rectificar(hijos):
+    for i in range(len(hijos)):
+        while(len(np.unique(hijos[i])) != len(hijos[i])):
+            j = 0
+            while(j < len(hijos[i])):
+                if j not in hijos[i]:
+                    u, c = np.unique(hijos[i], return_counts=True)
+                    aux = 0
+                    for k in range(len(hijos[i])):
+                        if u[c>1][0] == hijos[i][k]:
+                            aux = k
+                    hijos[i][aux] = j
+                    j = 0
+                else:
+                    j+=1
+    return hijos
+
 def mutacion(individuo):
     return np.random.permutation(individuo)
 
@@ -118,14 +135,18 @@ if len(sys.argv) == 7:
                 if len(poblacion)-indice != 1:
                     if random.uniform(0,1) <= prob_cruza:
                         resultado_cruza = cruza(poblacion[padre_1],poblacion[padre_2])
-                        #print("resultado cruza doble: ",str(resultado_cruza))
+                        if len(np.unique(resultado_cruza[0])) != len(resultado_cruza[0]):
+                            resultado_cruza = rectificar(resultado_cruza)
+                        print("resultado cruza doble: ",str(resultado_cruza))
                         poblacion_hijos.append(resultado_cruza[0])
                         poblacion_hijos.append(resultado_cruza[1])
                         indice+=2
                 else:
                     if random.uniform(0,1) <= prob_cruza:
                         resultado_cruza = cruza(poblacion[padre_1],poblacion[padre_2])
-                        #print("resultado cruza single: ",str(resultado_cruza))
+                        if len(np.unique(resultado_cruza[0])) != len(resultado_cruza[0]):
+                            resultado_cruza = rectificar(resultado_cruza)
+                        print("resultado cruza single: ",str(resultado_cruza))
                         poblacion_hijos.append(resultado_cruza[random.randint(0,1)])
                         indice+=1
 
@@ -136,11 +157,8 @@ if len(sys.argv) == 7:
         print(poblacion)
 
     fitness_aux = determinarFitness(poblacion, cantidadTableros, tamanoTableros)
-    fitness_invertido = invertirFitness(fitness_aux, tamanoTableros)
-    print(fitness_invertido)
-    
-    for n in range(len(fitness_invertido)):
-        if fitness_invertido[n] == solucionFitness(tamanoTableros):
+    for n in range(len(fitness_aux)):
+        if fitness_aux[n] == 0:
             print(str(n)," - ",str(poblacion[n]))
 
 else:
