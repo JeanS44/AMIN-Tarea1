@@ -157,9 +157,13 @@ if len(sys.argv) == 7:
         print(poblacion)
 
     fitness_aux = determinarFitness(poblacion, cantidadTableros, tamanoTableros)
+    pivot = solucionFitness(tamanoTableros)
     for n in range(len(fitness_aux)):
-        if fitness_aux[n] == 0:
-            print(str(n)," - ",str(poblacion[n]))
+        if fitness_aux[n] < pivot:
+            pivot = fitness_aux[n]        
+    for n in range(len(fitness_aux)):
+        if fitness_aux[n] == pivot:
+            print("Solucion con ",str(pivot)," Choques: ",str(n)," - ",str(poblacion[n]))
 
 else:
     print("Porfavor reingrese los parámetros de manera correcta.")
