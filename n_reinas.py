@@ -70,7 +70,7 @@ def seleccionIndividuos(ruleta_invertida):
             return pos
 
 def cruza(padre_1, padre_2):
-    punto = random.randint(1, len(padre_1)-2)
+    punto = random.randint(0, len(padre_1)-1)
     hijo_1, hijo_2 = padre_1.copy(), padre_2.copy()
     hijo_1 = np.append(padre_1[:punto], padre_2[punto:])
     hijo_2 = np.append(padre_2[:punto], padre_1[punto:])
@@ -79,38 +79,29 @@ def cruza(padre_1, padre_2):
 def mutacion(individuo):
     return np.random.permutation(individuo)
 
-if len(sys.argv) == 4:
+if len(sys.argv) == 7:
     semilla = int(sys.argv[1])
-    np.random.seed(semilla)
+    if semilla>=0:
+        np.random.seed(semilla)
+    else:
+        semilla = np.random.seed()
     tamanoTableros = int(sys.argv[2])
     cantidadTableros = int(sys.argv[3])
-    iteraciones = 1
-    prob_cruza = 1
-    prob_mutacion = 0.1
+    iteracion = int(sys.argv[4])
+    prob_cruza = float(sys.argv[5])
+    prob_mutacion = float(sys.argv[6])
     poblacion = inicializarPoblacion(tamanoTableros, cantidadTableros)
     print(poblacion)
 
-    for i in range(iteraciones):
-        """ fitness = determinarFitness(poblacion, cantidadTableros, tamanoTableros)
-        print("fitness: "+str(fitness))
-        suma_total = determinarSumaTotal(fitness)
-        print(suma_total)
-        proporcion = determinarProporcion(fitness)
-        print(proporcion)
-        ruleta = determinarRuleta(fitness)
-        print(ruleta) """
+    for i in range(iteracion):
+        print("----------------iteracion: ",str(i),"------------------------------------------------------")
         fitness_aux = determinarFitness(poblacion, cantidadTableros, tamanoTableros)
         fitness_invertido = invertirFitness(fitness_aux, tamanoTableros)
-        """ print(fitness_invertido)
-        proporcion_invertida = proporcionInvertida(fitness_invertido)
-        print(proporcion_invertida) """
+        print("fitness invertido: ",str(fitness_invertido))
         ruleta_invertida = ruletaInvertida(fitness_invertido)
-        print(ruleta_invertida)
+        print("ruleta invertida: ",str(ruleta_invertida))
         
         print("----")
-
-        seleccion = seleccionIndividuos(ruleta_invertida)
-        print(seleccion)
 
         poblacion_hijos = []
         indice = 0
@@ -118,7 +109,9 @@ if len(sys.argv) == 4:
             
             padre_1, padre_2 = seleccionIndividuos(ruleta_invertida), seleccionIndividuos(ruleta_invertida)
 
-            if padre_1 != padre_2:
+            if np.array_equal(poblacion[padre_1],poblacion[padre_2]):
+                pass
+            else:
                 if len(poblacion)-indice != 1:
                     if random.uniform(0,1) <= prob_cruza:
                         resultado_cruza = cruza(poblacion[padre_1],poblacion[padre_2])
@@ -132,13 +125,16 @@ if len(sys.argv) == 4:
                         print("resultado cruza single: ",str(resultado_cruza))
                         poblacion_hijos.append(resultado_cruza[random.randint(0,1)])
                         indice+=1
-                if random.uniform(0,1) <= prob_mutacion:
-                    mutacion(poblacion[seleccionIndividuos(ruleta_invertida)])
+
+                if random.uniform(0,1) <= prob_mutacion and len(poblacion_hijos)!=0:
+                    print(len(poblacion_hijos))
+                    print(indice)
+                    poblacion_hijos[indice-1] = mutacion(poblacion_hijos[indice-1])
         
         poblacion = np.array(poblacion_hijos)
         print(poblacion)
                 
 else:
     print("Porfavor reingrese los parámetros de manera correcta.")
-    print("Parametros a ingresar: 'Nombre del archivo' 'Semilla' 'Tamaño de tablero' 'Cantidad de tableros'")
+    print("Parametros a ingresar: 'Nombre del archivo' 'Semilla' 'Tamaño de tablero' 'Cantidad de tableros' 'Iteraciones' 'Probabilidad Cruza' 'Probabilidad Mutacion' ")
     sys.exit(0)
